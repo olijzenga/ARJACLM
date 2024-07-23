@@ -12,8 +12,8 @@ This repository consists of three components. First, the `apr` directory contain
 ARJACLM uses CLMs to generate code infills. This is done by calling a separate API written in Python which provides mask prediction
 functionality for many CLMs. The `clm` directory contains the Python application which exposes mask prediction functionality
 for many CLMs under a unified input and output format, and includes the API which is used by ARJACLM. The `experiments` directory
-contains the files that I used to evaluate the infill generation capabilities of 20 CLMs, and the tools for preparing bugs of
-the [Defects4J](https://github.com/rjust/defects4j) dataset for benchmarking of ARJACLM, and processing the results.
+contains the files that I used to evaluate the infill generation capabilities of 20 CLMs (see [README.md](experiments/clm-infill-benchmark/README.md)), and the tools for preparing bugs of
+the [Defects4J](https://github.com/rjust/defects4j) dataset for benchmarking of ARJACLM, and processing the results (see [README.md](experiments/defects4j-apr/README.md)).
 
 ## Requirements
 
