@@ -1,0 +1,12 @@
+**/tmp
+**/coverage.path.neg
+**/coverage.path.pos
+**/FaultyStmtsAndWeights.txt
+**/genprog.log
+**/jacoco.exec
+**/pos.tests.inscope
+**/simpleExample.config
+**/testcache.ser
+**/bin
+**/target
+**/apr
