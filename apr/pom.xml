@@ -37,7 +37,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>nl.oebelelijzenga.apr_proto.cli.AprCli</mainClass>
+                            <mainClass>nl.oebelelijzenga.arjaclm.cli.AprCli</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -73,7 +73,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.1.0</version>
                 <configuration>
-                    <mainClass>nl.oebelelijzenga.apr_proto.cli.AprCli</mainClass>
+                    <mainClass>nl.oebelelijzenga.arjaclm.cli.AprCli</mainClass>
                 </configuration>
             </plugin>
         </plugins>
