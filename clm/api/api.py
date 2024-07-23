@@ -33,12 +33,12 @@ if torch.cuda.is_available():
 from flask import Flask, request, jsonify
 from marshmallow import ValidationError
 
-from plm.api.dto import MaskPredictRequestDTO
-from plm.mask_predict import MaskPredictor
-from plm.model import ModelSamplingConfig
-from plm.model.mask_predict import ModelSamplingPreferences, ModelLoadPreferences, QuantizationMode
-from plm.plms import MaskPredictModelFactory
-from plm.setup import setup_logging
+from clm.api.dto import MaskPredictRequestDTO
+from clm.mask_predict import MaskPredictor
+from clm.model import ModelSamplingConfig
+from clm.model.mask_predict import ModelSamplingPreferences, ModelLoadPreferences, QuantizationMode
+from clm.clms import MaskPredictModelFactory
+from clm.setup import setup_logging
 
 setup_logging()
 app = Flask(__name__)

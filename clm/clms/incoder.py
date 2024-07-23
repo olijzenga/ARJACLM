@@ -22,16 +22,16 @@ import re
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
-from plm.model import (
+from clm.model import (
     MaskPredictModel,
     MaskPredictResult,
     ModelSamplingConfig,
     ModelLoadConfig,
     ParameterDataType,
 )
-from plm.model.mask_predict import MaskPredictModelVariant
-from plm.plms.stopping_conditions import StoppingCriteriaContainsString
-from plm import util
+from clm.model.mask_predict import MaskPredictModelVariant
+from clm.clms.stopping_conditions import StoppingCriteriaContainsString
+from clm import util
 
 
 class InCoder:

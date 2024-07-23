@@ -20,8 +20,8 @@
 import torch
 from transformers import pipeline
 
-from plm.model import MaskPredictModel
-from plm.model.mask_predict import (
+from clm.model import MaskPredictModel
+from clm.model.mask_predict import (
     MaskPredictResult,
     ModelSamplingConfig,
     ModelLoadConfig,

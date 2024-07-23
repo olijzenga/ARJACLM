@@ -22,15 +22,15 @@ import re
 import torch
 from transformers import AutoTokenizer, T5ForConditionalGeneration, RobertaTokenizer
 
-from plm.model import (
+from clm.model import (
     MaskPredictResult,
     MaskPredictModel,
     ModelSamplingConfig,
     ModelLoadConfig,
     ParameterDataType,
 )
-from plm.model.mask_predict import MaskPredictModelVariant
-from plm.plms.stopping_conditions import StoppingCriteriaContainsToken
+from clm.model.mask_predict import MaskPredictModelVariant
+from clm.clms.stopping_conditions import StoppingCriteriaContainsToken
 
 
 class CodeT5:

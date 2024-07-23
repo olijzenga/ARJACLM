@@ -20,19 +20,19 @@
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
-from plm.model import (
+from clm.model import (
     MaskPredictResult,
     MaskPredictModel,
     ModelSamplingConfig,
     ModelLoadConfig,
     ParameterDataType,
 )
-from plm.model.mask_predict import MaskPredictModelVariant
-from plm.util import remove_prefix_ignoring_whitespaces
+from clm.model.mask_predict import MaskPredictModelVariant
+from clm.util import remove_prefix_ignoring_whitespaces
 
 
-class SantaCoder:
-    def __init__(self, load_config: ModelLoadConfig, model_name="bigcode/santacoder"):
+class Refact:
+    def __init__(self, load_config: ModelLoadConfig, model_name="smallcloudai/Refact-1_6B-fim"):
         self.device: torch.device = load_config.device
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         self.model = AutoModelForCausalLM.from_pretrained(
@@ -40,47 +40,51 @@ class SantaCoder:
         )
 
     def fill_mask(self, text: str, sampling_config: ModelSamplingConfig) -> list[MaskPredictResult]:
-        text = f"<fim-prefix>{text}<fim-middle>"
+        text = f'<fim_prefix>{text}<fim_middle>'
 
         input_ids = self.tokenizer.encode(text, return_tensors="pt").to(self.model.device)
         outputs = self.model.generate(
-            input_ids, pad_token_id=self.tokenizer.eos_token_id, **sampling_config.get_sampling_parameters()
+            input_ids,
+            pad_token_id=self.tokenizer.eos_token_id,
+            **sampling_config.get_sampling_parameters()
         )
 
-        plain_input = text.replace("<fim-prefix>", "").replace("<fim-suffix>", "").replace("<fim-middle>", "")
+        plain_input = (
+            text.replace("<fim_prefix>", "").replace("<fim_suffix>", "").replace("<fim_middle>", "")
+        )
 
         return [
             MaskPredictResult(
                 None,
-                [
-                    remove_prefix_ignoring_whitespaces(
-                        plain_input, self.tokenizer.decode(output, skip_special_tokens=True)
-                    )
-                ],
+                [remove_prefix_ignoring_whitespaces(plain_input, self.tokenizer.decode(output, skip_special_tokens=True))],
                 -1,
             )
             for output in outputs
         ]
 
 
-class SantaCoderMaskPredictModel(MaskPredictModel):
-    NAME = "santacoder"
-    PARAMETER_DATATYPE = ParameterDataType.BF16  # Is actually B32 but we do not support explicitly using bf16 so we do this instead
+class RefactMaskPredictModel(MaskPredictModel):
+    NAME = 'refact'
+    PARAMETER_DATATYPE = ParameterDataType.BF16
 
     VARIANTS = [
-        MaskPredictModelVariant("", default_top_p=0.6, default_temperature=0.7)
+        MaskPredictModelVariant(
+            "1_6B-fim",
+            default_top_p=0.6,
+            default_temperature=0.4
+        )
     ]
 
     def __init__(self, load_config: ModelLoadConfig, model_variant: MaskPredictModelVariant | None = None) -> None:
         super().__init__(load_config, model_variant)
 
-        self.starcoder: SantaCoder = SantaCoder(self.load_config)
+        self.refact: Refact = Refact(self.load_config, f'smallcloudai/Refact-{self.model_variant.name}')
 
     def predict(self, text: str, sampling_config: ModelSamplingConfig) -> list[MaskPredictResult]:
-        return self.starcoder.fill_mask(text, sampling_config)
+        return self.refact.fill_mask(text, sampling_config)
 
     def get_does_multi_token_prediction(self) -> bool:
         return True
 
     def get_mask(self, mask: str) -> str:
-        return "<fim-suffix>"
+        return '<fim_suffix>'

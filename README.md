@@ -47,7 +47,7 @@ Currently, there is only one API endpoint.
 
 ```json
 {
-  "text": "def some_fn(): <mask>",  // Input with <mask> tokens
+  "text": "def hello_world(): <mask>",  // Input with <mask> token
   "model_name": "unixcoder",  // Name of the PLM
   "model_variant": null,  // PLM variant, available options differ per PLM
   "nr_results": 10  // Number of mask predictions to generate, defaults to 10

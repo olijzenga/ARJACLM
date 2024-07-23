@@ -20,19 +20,19 @@
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
-from plm.model import (
+from clm.model import (
     MaskPredictResult,
     MaskPredictModel,
     ModelSamplingConfig,
     ModelLoadConfig,
     ParameterDataType,
 )
-from plm.model.mask_predict import MaskPredictModelVariant
-from plm.util import remove_prefix_ignoring_whitespaces
+from clm.model.mask_predict import MaskPredictModelVariant
+from clm.util import remove_prefix_ignoring_whitespaces
 
 
-class CodeShell:
-    def __init__(self, load_config: ModelLoadConfig, model_name="wisdomshell/codeshell-7B"):
+class StarCoder:
+    def __init__(self, load_config: ModelLoadConfig, model_name="bigcode/starcoder"):
         self.device: torch.device = load_config.device
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         self.model = AutoModelForCausalLM.from_pretrained(
@@ -63,21 +63,21 @@ class CodeShell:
         ]
 
 
-class CodeShellMaskPredictModel(MaskPredictModel):
-    NAME = "codeshell"
-    PARAMETER_DATATYPE = ParameterDataType.BF16
+class StarCoderMaskPredictModel(MaskPredictModel):
+    NAME = "starcoder"
+    PARAMETER_DATATYPE = ParameterDataType.F32
 
     VARIANTS = [
-        MaskPredictModelVariant("7B", default_top_p=0.6, default_temperature=0.7)
+        MaskPredictModelVariant("", default_top_p=0.6, default_temperature=1.1)
     ]
 
     def __init__(self, load_config: ModelLoadConfig, model_variant: MaskPredictModelVariant | None = None) -> None:
         super().__init__(load_config, model_variant)
 
-        self.codeshell: CodeShell = CodeShell(self.load_config, f"wisdomshell/codeshell-{self.model_variant.name}")
+        self.starcoder: StarCoder = StarCoder(self.load_config)
 
     def predict(self, text: str, sampling_config: ModelSamplingConfig) -> list[MaskPredictResult]:
-        return self.codeshell.fill_mask(text, sampling_config)
+        return self.starcoder.fill_mask(text, sampling_config)
 
     def get_does_multi_token_prediction(self) -> bool:
         return True

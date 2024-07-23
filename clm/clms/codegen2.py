@@ -17,75 +17,88 @@
 # IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
-from plm.model import (
+from clm.model import (
     MaskPredictResult,
     MaskPredictModel,
     ModelSamplingConfig,
     ModelLoadConfig,
     ParameterDataType,
 )
-from plm.model.mask_predict import MaskPredictModelVariant
+from clm.model.mask_predict import MaskPredictModelVariant
+from clm.clms.stopping_conditions import StoppingCriteriaContainsString
 
 
-class CodeGen:
-    def __init__(
-        self, load_config: ModelLoadConfig, model_name: str = "salesforce/codegen-350m-multi"
-    ) -> None:
+class CodeGen2:
+    def __init__(self, load_config: ModelLoadConfig, model_name: str = "salesforce/codegen2-1B") -> None:
         self.device = load_config.device
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
-        self.model = AutoModelForCausalLM.from_pretrained(model_name, **load_config.get_load_parameters())
+        self.model = AutoModelForCausalLM.from_pretrained(
+            model_name, trust_remote_code=True, revision="main", **load_config.get_load_parameters()
+        )
 
     def fill_mask(self, text: str, sampling_config: ModelSamplingConfig) -> list[MaskPredictResult]:
-        print(self.tokenizer.eos_token)
-        # eos_id = self.tokenizer.convert_tokens_to_ids(self.tokenizer.eos_token)
-        eos_id = self.tokenizer.convert_tokens_to_ids("}")
-        pad_id = self.tokenizer.convert_tokens_to_ids("<|endoftext|>")
-
         input_ids = self.tokenizer(text, return_tensors="pt").input_ids.cuda()
         generated_ids = self.model.generate(
             input_ids,
-            pad_token_id=pad_id,
-            eos_token_id=eos_id,
+            eos_token_id=self.tokenizer.eos_token_id,
+            pad_token_id=self.tokenizer.eos_token_id,
+            stopping_criteria=StoppingCriteriaContainsString(['<eom>'], self.tokenizer).to_list(),
             **sampling_config.get_sampling_parameters(),
         )
 
         result = []
         for generated_id in generated_ids:
-            result.append(
-                MaskPredictResult(self.tokenizer.decode(generated_id, skip_special_tokens=True), None, -1)
-            )
+            mask_replacement = self._parse_result(self.tokenizer.decode(generated_id, skip_special_tokens=True))
+            if mask_replacement is None:
+                continue
+
+            result.append(MaskPredictResult(None, [mask_replacement], -1))
+
+        return result
+
+    @staticmethod
+    def _parse_result(result: str) -> str | None:
+        if '<sep>' not in result:
+            return None
+
+        result = result.split('<sep>', 1)[1]
+        result = result.replace('<mask_1>', '').replace('<eom>', '')
 
         return result
 
 
-class CodeGenMaskPredictModel(MaskPredictModel):
-    NAME = "codegen"
-    PARAMETER_DATATYPE = ParameterDataType.F16
+class CodeGen2MaskPredictModel(MaskPredictModel):
+    NAME = "codegen2"
+    PARAMETER_DATATYPE = ParameterDataType.F32
 
     VARIANTS = [
-        MaskPredictModelVariant("350M-multi", default_beam_size=10),
-        MaskPredictModelVariant("2B-multi", default_beam_size=10),
-        MaskPredictModelVariant("6B-multi", default_beam_size=10),
-        MaskPredictModelVariant("16B-multi", default_beam_size=10),
+        MaskPredictModelVariant("1B", default_top_p=0.6, default_temperature=0.7),
+        MaskPredictModelVariant("3_7B", default_top_p=0.4, default_temperature=1.3),
+        MaskPredictModelVariant("7B", default_top_p=0.8, default_temperature=0.1),
+        MaskPredictModelVariant("16B", default_top_p=0.4, default_temperature=1.9)
     ]
 
     def __init__(self, load_config: ModelLoadConfig, model_variant: MaskPredictModelVariant | None = None) -> None:
         super().__init__(load_config, model_variant)
 
-        self.codegen = CodeGen(self.load_config, f"salesforce/codegen-{self.model_variant.name}")
+        self.codegen2 = CodeGen2(self.load_config, f"salesforce/codegen2-{self.model_variant.name}")
 
     def predict(self, text: str, sampling_config: ModelSamplingConfig) -> list[MaskPredictResult]:
-        return self.codegen.fill_mask(text, sampling_config)
+        return self.codegen2.fill_mask(text, sampling_config)
 
     def get_does_multi_token_prediction(self) -> bool:
         return True
 
     def get_mask(self, mask: str) -> str:
+        return f"<mask_{self.MASK_NR_TEMPLATE}>"
+
+    def get_input_suffix(self, text: str) -> str:
+        if "<mask_1>" in text:
+            return "<|endoftext|><sep><mask_1>"
+
         return ""
 
-    @staticmethod
-    def get_model_variants() -> list[str]:
-        return ["350M-multi", "2B-multi", "6B-multi", "16B-multi"]
+    def get_first_token_number(self) -> int:
+        return 1

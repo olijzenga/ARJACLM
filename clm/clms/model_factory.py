@@ -19,7 +19,7 @@
 
 import torch
 
-from plm.plms import (
+from clm.clms import (
     UniXcoderMaskPredictModel,
     CodeBERTMaskPredictModel,
     CodeT5MaskPredictModel,
@@ -36,7 +36,7 @@ from plm.plms import (
     CodeLlamaMaskPredictModel,
     CodeShellMaskPredictModel
 )
-from plm.model import MaskPredictModel, ModelLoadPreferences, ModelLoadConfig
+from clm.model import MaskPredictModel, ModelLoadPreferences, ModelLoadConfig
 
 ALL_MODELS = [
     UniXcoderMaskPredictModel,

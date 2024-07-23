@@ -23,8 +23,8 @@ import fire
 import logging
 import torch
 
-from plm import util
-from plm.model import (
+from clm import util
+from clm.model import (
     MaskPredictResult,
     NormalizedMaskPredictResult,
     MaskPredictModel,
@@ -34,8 +34,8 @@ from plm.model import (
     ModelSamplingPreferences,
     ModelLoadPreferences
 )
-from plm.plms import MaskPredictModelFactory
-from plm.setup import setup_logging
+from clm.clms import MaskPredictModelFactory
+from clm.setup import setup_logging
 
 log = logging.getLogger(__name__)
 

@@ -17,66 +17,70 @@
 # IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
-from plm.model import (
+from clm.model import (
     MaskPredictResult,
     MaskPredictModel,
     ModelSamplingConfig,
     ModelLoadConfig,
     ParameterDataType,
 )
-from plm.model.mask_predict import MaskPredictModelVariant
+from clm.model.mask_predict import MaskPredictModelVariant
+from clm.util import remove_prefix_ignoring_whitespaces
 
 
-class CodeLlama:
-    def __init__(self, load_config: ModelLoadConfig, model_name: str = "codellama/codellama-7b-hf") -> None:
-        self.device = load_config.device
+class SantaCoder:
+    def __init__(self, load_config: ModelLoadConfig, model_name="bigcode/santacoder"):
+        self.device: torch.device = load_config.device
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         self.model = AutoModelForCausalLM.from_pretrained(
             model_name, trust_remote_code=True, **load_config.get_load_parameters()
         )
 
     def fill_mask(self, text: str, sampling_config: ModelSamplingConfig) -> list[MaskPredictResult]:
-        input_ids = self.tokenizer(text, return_tensors="pt").input_ids.cuda()
-        generated_ids = self.model.generate(
-            input_ids,
-            eos_token_id=self.tokenizer.eos_token_id,
-            pad_token_id=self.tokenizer.eos_token_id,
-            **sampling_config.get_sampling_parameters(),
+        text = f"<fim-prefix>{text}<fim-middle>"
+
+        input_ids = self.tokenizer.encode(text, return_tensors="pt").to(self.model.device)
+        outputs = self.model.generate(
+            input_ids, pad_token_id=self.tokenizer.eos_token_id, **sampling_config.get_sampling_parameters()
         )
+
+        plain_input = text.replace("<fim-prefix>", "").replace("<fim-suffix>", "").replace("<fim-middle>", "")
 
         return [
             MaskPredictResult(
                 None,
-                [self.tokenizer.decode(generated_id[len(input_ids[0]) :], skip_special_tokens=True)],
-                -1.0,
+                [
+                    remove_prefix_ignoring_whitespaces(
+                        plain_input, self.tokenizer.decode(output, skip_special_tokens=True)
+                    )
+                ],
+                -1,
             )
-            for generated_id in generated_ids
+            for output in outputs
         ]
 
 
-class CodeLlamaMaskPredictModel(MaskPredictModel):
-    NAME = "codellama"
-    PARAMETER_DATATYPE = ParameterDataType.BF16
+class SantaCoderMaskPredictModel(MaskPredictModel):
+    NAME = "santacoder"
+    PARAMETER_DATATYPE = ParameterDataType.BF16  # Is actually B32 but we do not support explicitly using bf16 so we do this instead
 
     VARIANTS = [
-        MaskPredictModelVariant("7B", default_top_p=0.6, default_temperature=1.0),
-        MaskPredictModelVariant("13B", default_top_p=0.8, default_temperature=0.7),
-        MaskPredictModelVariant("7B-instruct", default_top_p=0.8, default_temperature=1.0),
-        MaskPredictModelVariant("13B-instruct", default_top_p=0.8, default_temperature=1.3)
+        MaskPredictModelVariant("", default_top_p=0.6, default_temperature=0.7)
     ]
 
     def __init__(self, load_config: ModelLoadConfig, model_variant: MaskPredictModelVariant | None = None) -> None:
         super().__init__(load_config, model_variant)
 
-        self.codellama = CodeLlama(self.load_config, f"codellama/codellama-{self.model_variant.name}-hf")
+        self.starcoder: SantaCoder = SantaCoder(self.load_config)
 
     def predict(self, text: str, sampling_config: ModelSamplingConfig) -> list[MaskPredictResult]:
-        return self.codellama.fill_mask(text, sampling_config)
+        return self.starcoder.fill_mask(text, sampling_config)
 
     def get_does_multi_token_prediction(self) -> bool:
         return True
 
     def get_mask(self, mask: str) -> str:
-        return f"<FILL_ME>"
+        return "<fim-suffix>"

@@ -27,14 +27,14 @@ from transformers import (
     AutoModelForSeq2SeqLM,
 )
 
-from plm.model import (
+from clm.model import (
     MaskPredictResult,
     MaskPredictModel,
     ModelSamplingConfig,
     ModelLoadConfig,
     ParameterDataType,
 )
-from plm.model.mask_predict import MaskPredictModelVariant
+from clm.model.mask_predict import MaskPredictModelVariant
 
 
 class CodeT5p:

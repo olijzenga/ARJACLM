@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "plm"
+name = "clm"
 version = "0.1.0"
 description = ""
 authors = ["Oebele Lijzenga <oebelelijzenga@gmail.com>"]

@@ -20,15 +20,15 @@
 import torch
 from transformers import PLBartTokenizer, PLBartForConditionalGeneration
 
-from plm.model import (
+from clm.model import (
     MaskPredictResult,
     MaskPredictModel,
     ModelSamplingConfig,
     ModelLoadConfig,
     ParameterDataType,
 )
-from plm import util
-from plm.model.mask_predict import MaskPredictModelVariant
+from clm import util
+from clm.model.mask_predict import MaskPredictModelVariant
 
 
 class PLBART:
