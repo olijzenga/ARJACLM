@@ -25,7 +25,7 @@ import subprocess
 
 from threading import Thread
 
-seed = int(os.getenv('PLM_SEED', '0'))
+seed = int(os.getenv('CLM_SEED', '0'))
 torch.manual_seed(seed)
 if torch.cuda.is_available():
     torch.cuda.manual_seed(seed)
@@ -44,14 +44,14 @@ setup_logging()
 app = Flask(__name__)
 
 device_name = os.getenv("CUDA_DEVICE", "cuda")
-quantization_mode = QuantizationMode.from_string(os.getenv("PLM_QUANTIZATION_MODE")) if os.getenv("PLM_QUANTIZATION_MODE") else None
+quantization_mode = QuantizationMode.from_string(os.getenv("CLM_QUANTIZATION_MODE")) if os.getenv("CLM_QUANTIZATION_MODE") else None
 model_factory = MaskPredictModelFactory(ModelLoadPreferences(device_name=device_name, quantization_mode=quantization_mode))
 
 print("IMPORTANT: Using device", device_name)
 if quantization_mode:
     print("IMPORTANT: Using quantization mode", quantization_mode)
 
-verbose = bool(os.getenv('PLM_API_VERBOSE', False))
+verbose = bool(os.getenv('CLM_API_VERBOSE', False))
 if verbose:
     print("Verbose mode is enabled")
 

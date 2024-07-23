@@ -55,7 +55,7 @@ class MaskPredictor:
         self._model: MaskPredictModel = model
         self._sampling_config: ModelSamplingConfig = sampling_config
 
-        # Input text provided to the PLM
+        # Input text provided to the CLM
         self._model_specific_tokens_text: str = ""
         # Mapping of generic mask tokens to model specific mask tokens
         self._model_specific_tokens_map: list[tuple[str, str]] = []
@@ -123,7 +123,7 @@ class MaskPredictor:
         for result in results:
             if result.full_result is not None:
                 # Extract mask replacements from full result and then drop the full result as
-                # we cannot trust PLMs to preserve code formatting
+                # we cannot trust CLMs to preserve code formatting
                 result = MaskPredictResult(
                     None,
                     [r for r in self._match_mask_replacements(result.full_result) ],

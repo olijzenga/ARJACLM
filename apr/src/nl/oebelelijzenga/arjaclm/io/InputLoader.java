@@ -27,7 +27,7 @@ import nl.oebelelijzenga.arjaclm.model.apr.*;
 import nl.oebelelijzenga.arjaclm.model.apr.genetic.GeneticConfig;
 import nl.oebelelijzenga.arjaclm.model.io.AprConfig;
 import nl.oebelelijzenga.arjaclm.model.io.AprPreferences;
-import nl.oebelelijzenga.arjaclm.model.io.PlmConfig;
+import nl.oebelelijzenga.arjaclm.model.io.ClmConfig;
 import nl.oebelelijzenga.arjaclm.model.java.JavaContext;
 
 import java.nio.file.Path;
@@ -85,15 +85,15 @@ public class InputLoader {
         FileUtil.mkdir(preferences.fitnessCacheDir());
 
         return new AprConfig(
-                new PlmConfig(
-                        preferences.plmEnabled(),
-                        preferences.plmName(),
-                        preferences.plmVariant(),
-                        preferences.plmApiHost(),
-                        preferences.plmApiPort(),
-                        preferences.plmNrPromptContextLines(),
-                        preferences.plmNrInfills(),
-                        preferences.plmMutationProbability()
+                new ClmConfig(
+                        preferences.clmEnabled(),
+                        preferences.clmName(),
+                        preferences.clmVariant(),
+                        preferences.clmApiHost(),
+                        preferences.clmApiPort(),
+                        preferences.clmNrPromptContextLines(),
+                        preferences.clmNrInfills(),
+                        preferences.clmMutationProbability()
                 ),
                 new GeneticConfig(
                         preferences.populationSize(),

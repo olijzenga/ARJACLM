@@ -21,7 +21,7 @@
 
 package nl.oebelelijzenga.arjaclm.genetic.mutation;
 
-import nl.oebelelijzenga.arjaclm.api.PlmApiClient;
+import nl.oebelelijzenga.arjaclm.api.ClmApiClient;
 import nl.oebelelijzenga.arjaclm.api.dto.MaskPredictRequestDTO;
 import nl.oebelelijzenga.arjaclm.api.dto.MaskPredictResponseDTO;
 import nl.oebelelijzenga.arjaclm.api.dto.MaskPredictResponseMaskReplacementDTO;
@@ -30,7 +30,7 @@ import nl.oebelelijzenga.arjaclm.genetic.PseudoRandom;
 import nl.oebelelijzenga.arjaclm.model.apr.genetic.Edit;
 import nl.oebelelijzenga.arjaclm.model.apr.genetic.Variant;
 import nl.oebelelijzenga.arjaclm.model.apr.ingredient.Ingredient;
-import nl.oebelelijzenga.arjaclm.model.io.PlmConfig;
+import nl.oebelelijzenga.arjaclm.model.io.ClmConfig;
 import nl.oebelelijzenga.arjaclm.parser.ASTUtil;
 import nl.oebelelijzenga.arjaclm.parser.JavaEditor;
 import nl.oebelelijzenga.arjaclm.parser.JavaParser;
@@ -41,17 +41,17 @@ import org.eclipse.jdt.core.dom.Statement;
 
 import java.util.*;
 
-public class PlmMutation implements IMutation {
+public class ClmMutation implements IMutation {
 
-    private static final Logger logger = LogManager.getLogger(PlmMutation.class);
+    private static final Logger logger = LogManager.getLogger(ClmMutation.class);
     private static final String maskPlaceholderStatement = "System.out.println(\"this is my mask placeholder\");";
 
-    private final PlmConfig plmConfig;
+    private final ClmConfig clmConfig;
     private static final Map<String, List<List<Statement>>> maskReplacementCache = new HashMap<>();
     private final float mutationProbability;
 
-    public PlmMutation(PlmConfig plmConfig, float mutationProbability) {
-        this.plmConfig = plmConfig;
+    public ClmMutation(ClmConfig clmConfig, float mutationProbability) {
+        this.clmConfig = clmConfig;
         this.mutationProbability = mutationProbability * 1.5f;
     }
 
@@ -67,7 +67,7 @@ public class PlmMutation implements IMutation {
             }
 
             if ((newEdit.enabled() && !edit.enabled()) || PseudoRandom.bool(mutationProbability)) {
-                Optional<Edit> optionalEdit = withPlmIngredient(edit, newEdits);
+                Optional<Edit> optionalEdit = withClmIngredient(edit, newEdits);
                 if (optionalEdit.isPresent()) {
                     newEdit = optionalEdit.get();
                 }
@@ -76,10 +76,10 @@ public class PlmMutation implements IMutation {
             newEdits = IMutation.replaceEdit(newEdits, edit, newEdit);
         }
 
-        return variant.withEdits(newEdits, PlmMutation.class);
+        return variant.withEdits(newEdits, ClmMutation.class);
     }
 
-    private Optional<Edit> withPlmIngredient(Edit targetEdit, List<Edit> edits) throws AprException {
+    private Optional<Edit> withClmIngredient(Edit targetEdit, List<Edit> edits) throws AprException {
         Edit maskEdit = new Edit(
                 true,
                 PseudoRandom.pick(List.of(ManipulationName.REPLACE, ManipulationName.INSERT_BEFORE)),
@@ -106,8 +106,8 @@ public class PlmMutation implements IMutation {
             return Optional.empty();
         }
 
-        String maskedCode = maskedCodeWithPlaceholder.replace(maskPlaceholderStatement, PlmApiClient.MASK_TOKEN);
-        String prompt = getLimitedScope(maskedCode,  plmConfig.nrPromptContextLines() / 2);  // Divide by two since its both before and after
+        String maskedCode = maskedCodeWithPlaceholder.replace(maskPlaceholderStatement, ClmApiClient.MASK_TOKEN);
+        String prompt = getLimitedScope(maskedCode,  clmConfig.nrPromptContextLines() / 2);  // Divide by two since its both before and after
 
         List<List<Statement>> maskReplacements = getMaskReplacements(prompt, maskEdit);
         if (maskReplacements.isEmpty()) {
@@ -117,7 +117,7 @@ public class PlmMutation implements IMutation {
             return Optional.empty();
         }
 
-        logger.info("Successfully generated ingredient using PLM");
+        logger.info("Successfully generated ingredient using CLM");
         List<Statement> maskReplacement = pickMaskReplacement(maskReplacements);
 
         Ingredient ingredient = new Ingredient(maskReplacement, false);
@@ -131,13 +131,13 @@ public class PlmMutation implements IMutation {
         }
 
         // Generate mask replacement
-        PlmApiClient plmApiClient = new PlmApiClient(plmConfig.apiHost(), plmConfig.apiPort());
-        MaskPredictResponseDTO responseDto = plmApiClient.maskPredict(
+        ClmApiClient clmApiClient = new ClmApiClient(clmConfig.apiHost(), clmConfig.apiPort());
+        MaskPredictResponseDTO responseDto = clmApiClient.maskPredict(
                 new MaskPredictRequestDTO(
                         prompt,
-                        plmConfig.modelName(),
-                        plmConfig.modelVariant(),
-                        plmConfig.nrInfills()
+                        clmConfig.modelName(),
+                        clmConfig.modelVariant(),
+                        clmConfig.nrInfills()
                 )
         );
         List<List<Statement>> maskReplacements = getNonEmptyUniqueFormattedMaskReplacements(responseDto, maskEdit);
@@ -165,7 +165,7 @@ public class PlmMutation implements IMutation {
      * Returns only the fragment of code surrounding the mask token
      */
     private static String getLimitedScope(String code, int nrContextLines) {
-        String[] elements = code.split(PlmApiClient.MASK_TOKEN, 2);
+        String[] elements = code.split(ClmApiClient.MASK_TOKEN, 2);
         String left = elements[0];
         String right = elements[1];
 
@@ -177,7 +177,7 @@ public class PlmMutation implements IMutation {
         resultElements.addAll(leftElements.subList(Math.max(0, leftElements.size() - 1 - nrContextLines), leftElements.size()));
 
         // Fix mask line
-        resultElements.set(resultElements.size() - 1, resultElements.get(resultElements.size() - 1) + PlmApiClient.MASK_TOKEN + rightElements.get(0));
+        resultElements.set(resultElements.size() - 1, resultElements.get(resultElements.size() - 1) + ClmApiClient.MASK_TOKEN + rightElements.get(0));
 
         // Add elements after mask
         if (resultElements.size() >= 2) {

@@ -79,29 +79,29 @@ public class BaseAPRCommand {
     @CommandLine.Option(names = {"--mu"}, description = "Multiplier for the probability that a modification point is initially set as enabled in the population")
     protected float mu = 0.06f;
 
-    @CommandLine.Option(names = {"--plm-enabled"}, description = "Whether to use PLMs to generate patch ingredients")
-    protected boolean plmEnabled = true;
+    @CommandLine.Option(names = {"--clm-enabled"}, description = "Whether to use CLMs to generate patch ingredients")
+    protected boolean clmEnabled = true;
 
-    @CommandLine.Option(names = {"--plm-name"}, description = "Name of the PLM to use")
-    protected String plmName = "refact";
+    @CommandLine.Option(names = {"--clm-name"}, description = "Name of the CLM to use")
+    protected String clmName = "refact";
 
-    @CommandLine.Option(names = {"--plm-variant"}, description = "Variant of the PLM to use")
-    protected String plmVariant = "1_6B-fim";
+    @CommandLine.Option(names = {"--clm-variant"}, description = "Variant of the CLM to use")
+    protected String clmVariant = "1_6B-fim";
 
-    @CommandLine.Option(names = {"--plm-api-host"}, description = "Host of the PLM API")
-    protected String plmApiHost = "localhost";
+    @CommandLine.Option(names = {"--clm-api-host"}, description = "Host of the CLM API")
+    protected String clmApiHost = "localhost";
 
-    @CommandLine.Option(names = {"--plm-api-port"}, description = "Port of the PLM API")
-    protected int plmApiPort = 5000;
+    @CommandLine.Option(names = {"--clm-api-port"}, description = "Port of the CLM API")
+    protected int clmApiPort = 5000;
 
-    @CommandLine.Option(names = {"--plm-context-lines"}, description = "Number of lines of code context provided in PLM prompts")
-    protected int plmNrPromptContextLines = 100;
+    @CommandLine.Option(names = {"--clm-context-lines"}, description = "Number of lines of code context provided in CLM prompts")
+    protected int clmNrPromptContextLines = 100;
 
-    @CommandLine.Option(names = {"--plm-mutation-probability"}, description = "Probability of using the PLM mutation instead of the ARJA mutation")
-    protected float plmMutationProbability = 0.4f;
+    @CommandLine.Option(names = {"--clm-mutation-probability"}, description = "Probability of using the CLM mutation instead of the ARJA mutation")
+    protected float clmMutationProbability = 0.4f;
 
-    @CommandLine.Option(names = {"--plm-nr-infills"}, description = "The number of infills generated per PLM mutation")
-    protected int plmNrInfills = 1;
+    @CommandLine.Option(names = {"--clm-nr-infills"}, description = "The number of infills generated per CLM mutation")
+    protected int clmNrInfills = 1;
 
     @CommandLine.Option(names = {"--delete-patch-dirs"}, description = "Whether to delete the patch directories after execution")
     protected boolean deletePatchDirs = getDefaultDeletePatchDirs();
@@ -130,14 +130,14 @@ public class BaseAPRCommand {
                 maxNrModificationPoints,
                 positiveTestRatio,
                 mu,
-                plmEnabled,
-                plmName,
-                plmVariant,
-                plmApiHost,
-                plmApiPort,
-                plmNrPromptContextLines,
-                plmNrInfills,
-                plmMutationProbability,
+                clmEnabled,
+                clmName,
+                clmVariant,
+                clmApiHost,
+                clmApiPort,
+                clmNrPromptContextLines,
+                clmNrInfills,
+                clmMutationProbability,
                 deletePatchDirs,
                 geneticSearchTimeLimitSeconds
         );

@@ -35,8 +35,8 @@ public class MutationFactory {
     }
 
     public IMutation createRandomMutation() {
-        if (aprConfig.plmConfig().plmEnabled() && PseudoRandom.bool(aprConfig.plmConfig().mutationProbability())) {
-            return new PlmMutation(aprConfig.plmConfig(), mutationProbability);
+        if (aprConfig.clmConfig().clmEnabled() && PseudoRandom.bool(aprConfig.clmConfig().mutationProbability())) {
+            return new ClmMutation(aprConfig.clmConfig(), mutationProbability);
         }
 
         return new ARJAMutation(mutationProbability);

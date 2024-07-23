@@ -34,7 +34,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-public class PlmApiClient {
+public class ClmApiClient {
 
     public static final String MASK_TOKEN = "<mask>";
 
@@ -42,7 +42,7 @@ public class PlmApiClient {
     private final int port;
     private final Gson gson;
 
-    public PlmApiClient(String host, int port) {
+    public ClmApiClient(String host, int port) {
         this.host = host;
         this.port = port;
         this.gson = new GsonBuilder().serializeNulls().create();
@@ -52,7 +52,7 @@ public class PlmApiClient {
         return String.format("http://%s:%d", host, port);
     }
 
-    private HttpResponse<String> doHttpRequest(String method, String url, Object content) throws PlmApiClientException {
+    private HttpResponse<String> doHttpRequest(String method, String url, Object content) throws ClmApiClientException {
         HttpRequest.BodyPublisher bodyPublisher;
         String requestContent = "";
         if (content == null) {
@@ -74,7 +74,7 @@ public class PlmApiClient {
         try {
             return client.send(requestBuilder.build(), HttpResponse.BodyHandlers.ofString());
         } catch (IOException | InterruptedException e) {
-            throw new PlmApiClientException(
+            throw new ClmApiClientException(
                     String.format(
                             "%s request to %s with body %s failed: %s",
                             method,

@@ -111,8 +111,8 @@ def format_results(result_data: list[tuple[str, dict]]) -> str:
     writer = csv.DictWriter(
         result_buf,
         fieldnames=[
-            "PLM Name",
-            "PLM Variant",
+            "CLM Name",
+            "CLM Variant",
             "Workdir",
             "JobID",
             "Completed At",
@@ -195,8 +195,8 @@ def format_results(result_data: list[tuple[str, dict]]) -> str:
 
         writer.writerow(
             {
-                "PLM Name": result_config["model_name"],
-                "PLM Variant": result_config["model_variant"],
+                "CLM Name": result_config["model_name"],
+                "CLM Variant": result_config["model_variant"],
                 "Workdir": os.path.basename(result_config["workdir"]),
                 "JobID": slurm_jid,
                 "Completed At": datetime.datetime.fromtimestamp(result_config["completed_at"]).strftime(

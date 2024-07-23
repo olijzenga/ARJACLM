@@ -262,7 +262,7 @@ def get_infill_times_and_peak_vram(runs: list[Run]) -> tuple["TimingStats", int]
         infill_time = 0
         lines = get_debug_log(run).split("\n")
         for line in lines:
-            if re.fullmatch(r"\d{2}:\d{2}:\d{2}\.\d{3} DEBUG PlmMutation:\d+ - Mask predict for modification point .*", line):
+            if re.fullmatch(r"\d{2}:\d{2}:\d{2}\.\d{3} DEBUG ClmMutation:\d+ - Mask predict for modification point .*", line):
                 infill_time += float(line.split('completed in ')[1].split(' ')[0])
 
                 if 'with peak memory usage of' in line:
@@ -319,9 +319,9 @@ def get_ingredient_stats(runs: list[Run]) -> IngredientStats:
             variant_info = summary.split('======== variant ========')[1].split('======== diff ========')[0]
 
             compile_result = 'compile success: true' in fitness_info
-            clm_ingr = 'plmIngr=t' in variant_info
+            clm_ingr = 'clmIngr=t' in variant_info
 
-            if not 'plmIngr=' in variant_info:
+            if not 'clmIngr=' in variant_info:
                 print(summary_file)
                 print('WARNING: CLM ingredient stats not available, skipping analysis')
                 return IngredientStats.empty()
@@ -335,10 +335,10 @@ def get_ingredient_stats(runs: list[Run]) -> IngredientStats:
             lines = f.readlines()
 
         for line in lines:
-            if re.fullmatch(r"\d{2}:\d{2}:\d{2}\.\d{3} DEBUG PlmMutation:\d+ - Got \d+ unique non-empty mask replacements\n", line):
+            if re.fullmatch(r"\d{2}:\d{2}:\d{2}\.\d{3} DEBUG ClmMutation:\d+ - Got \d+ unique non-empty mask replacements\n", line):
                 nr_replacements = int(line.split('Got ')[1].split(' ')[0])
                 nr_clm_ingredients += nr_replacements
-            elif re.fullmatch(r"\d{2}:\d{2}:\d{2}\.\d{3} DEBUG PlmMutation:\d+ - Mask predict produced an unparseable statement\n", line):
+            elif re.fullmatch(r"\d{2}:\d{2}:\d{2}\.\d{3} DEBUG ClmMutation:\d+ - Mask predict produced an unparseable statement\n", line):
                 nr_clm_ingredients += 1
                 nr_clm_parse_fails += 1
 
@@ -477,9 +477,9 @@ def main(results_dir: str, failures_only: bool = False, markdown: bool = False, 
 
     print('file path', results_dir)
 
-    plm_log_path = os.path.join(results_dir, 'plm.log')
-    if os.path.exists(plm_log_path) and os.path.getsize(plm_log_path) < 1000:
-        print("WARNING: PLM log is very small, it might have crashed on startup")
+    clm_log_path = os.path.join(results_dir, 'clm.log')
+    if os.path.exists(clm_log_path) and os.path.getsize(clm_log_path) < 1000:
+        print("WARNING: CLM log is very small, it might have crashed on startup")
 
 
 if __name__ == "__main__":

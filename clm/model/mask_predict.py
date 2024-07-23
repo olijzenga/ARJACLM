@@ -374,7 +374,7 @@ class MaskPredictModel(ABC):
     @abstractmethod
     def get_does_multi_token_prediction(self) -> bool:
         """
-        Returns whether the PLM can generate multiple tokens from one mask token
+        Returns whether the CLM can generate multiple tokens from one mask token
         """
         pass
 

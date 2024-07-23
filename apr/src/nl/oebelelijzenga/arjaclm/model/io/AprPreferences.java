@@ -45,14 +45,14 @@ public record AprPreferences(
         int maxNrModificationPoints,
         float positiveTestRatio,
         float mu,
-        boolean plmEnabled,
-        String plmName,
-        String plmVariant,
-        String plmApiHost,
-        int plmApiPort,
-        int plmNrPromptContextLines,
-        int plmNrInfills,
-        float plmMutationProbability,
+        boolean clmEnabled,
+        String clmName,
+        String clmVariant,
+        String clmApiHost,
+        int clmApiPort,
+        int clmNrPromptContextLines,
+        int clmNrInfills,
+        float clmMutationProbability,
         boolean deleteIntermediatePatchDirs,
         int geneticSearchTimeLimitSeconds
 ) {
@@ -77,14 +77,14 @@ public record AprPreferences(
         map.put("maxNrModificationPoints", Integer.toString(maxNrModificationPoints));
         map.put("positiveTestRatio", Float.toString(positiveTestRatio));
         map.put("mu", Float.toString(mu));
-        map.put("plmEnabled", Boolean.toString(plmEnabled));
-        map.put("plmName", plmName);
-        map.put("plmVariant", plmVariant);
-        map.put("plmApiHost", plmApiHost);
-        map.put("plmApiPort", Integer.toString(plmApiPort));
-        map.put("plmNrPromptContextLines", Integer.toString(plmNrPromptContextLines));
-        map.put("plmMutationProbability", Float.toString(plmMutationProbability));
-        map.put("plmNrInfills", Integer.toString(plmNrInfills));
+        map.put("clmEnabled", Boolean.toString(clmEnabled));
+        map.put("clmName", clmName);
+        map.put("clmVariant", clmVariant);
+        map.put("clmApiHost", clmApiHost);
+        map.put("clmApiPort", Integer.toString(clmApiPort));
+        map.put("clmNrPromptContextLines", Integer.toString(clmNrPromptContextLines));
+        map.put("clmMutationProbability", Float.toString(clmMutationProbability));
+        map.put("clmNrInfills", Integer.toString(clmNrInfills));
         map.put("deleteIntermediatePatchDirs", Boolean.toString(deleteIntermediatePatchDirs));
         map.put("geneticSearchTimeLimitSeconds", Integer.toString(geneticSearchTimeLimitSeconds));
         return map;

@@ -254,7 +254,7 @@ public class Population {
                 ManipulationName manipulation = edit.manipulation();
 
                 if (!ingredient.isRedundancyIngredient()) {
-                    // Only check and fix redundancy ingredients, not plm ingredients
+                    // Only check and fix redundancy ingredients, not clm ingredients
                     continue;
                 }
 

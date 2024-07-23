@@ -19,10 +19,10 @@ This script applies the humaneval-java-infill benchmark to a CLM supported by th
 as follows:
 
 ```shell
-python benchmark_plm_infilling.py [plm name]
+python benchmark_clm_infilling.py [clm name]
 
 # Usage details
-python benchmark_plm_infilling.py --help
+python benchmark_clm_infilling.py --help
 ```
 
 Results will be written to the `workdirs` directory (automatically generated) which contains all intermediate 

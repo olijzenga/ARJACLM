@@ -21,7 +21,7 @@
 
 package nl.oebelelijzenga.arjaclm.cli;
 
-import nl.oebelelijzenga.arjaclm.api.PlmApiClient;
+import nl.oebelelijzenga.arjaclm.api.ClmApiClient;
 import nl.oebelelijzenga.arjaclm.api.dto.MaskPredictRequestDTO;
 import nl.oebelelijzenga.arjaclm.api.dto.MaskPredictResponseDTO;
 import nl.oebelelijzenga.arjaclm.api.dto.MaskPredictResponseMaskReplacementDTO;
@@ -34,7 +34,7 @@ import picocli.CommandLine.Parameters;
 import java.util.concurrent.Callable;
 
 @Command(name = "mask_predict")
-public class PlmApiClientCommand implements Callable<Integer> {
+public class ClmApiClientCommand implements Callable<Integer> {
 
     @Parameters(description = "Name of the model to use")
     String modelName;
@@ -50,7 +50,7 @@ public class PlmApiClientCommand implements Callable<Integer> {
 
     @Override
     public Integer call() throws AprException {
-        PlmApiClient client = new PlmApiClient("localhost", 5000);
+        ClmApiClient client = new ClmApiClient("localhost", 5000);
 
         MaskPredictRequestDTO request = new MaskPredictRequestDTO(input, modelName, modelVariant, nrResults);
         MaskPredictResponseDTO response = client.maskPredict(request);

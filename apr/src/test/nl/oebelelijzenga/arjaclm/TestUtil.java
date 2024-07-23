@@ -25,7 +25,7 @@ import nl.oebelelijzenga.arjaclm.exception.AprException;
 import nl.oebelelijzenga.arjaclm.model.apr.ClassPath;
 import nl.oebelelijzenga.arjaclm.model.apr.genetic.GeneticConfig;
 import nl.oebelelijzenga.arjaclm.model.io.AprConfig;
-import nl.oebelelijzenga.arjaclm.model.io.PlmConfig;
+import nl.oebelelijzenga.arjaclm.model.io.ClmConfig;
 import nl.oebelelijzenga.arjaclm.model.java.JavaContext;
 import nl.oebelelijzenga.arjaclm.model.java.JavaProject;
 import nl.oebelelijzenga.arjaclm.model.java.ParsedJavaFile;
@@ -72,7 +72,7 @@ public class TestUtil {
 
     public static AprConfig getDummyAprConfig() {
         return new AprConfig(
-                new PlmConfig(true, "codet5", "large", "localhost", 5000, 0, 0, 0.1f),
+                new ClmConfig(true, "codet5", "large", "localhost", 5000, 0, 0, 0.1f),
                 new GeneticConfig(1, 1, 1, 1, true, 0.1f, 1),
                 Path.of(""),
                 Path.of(""),

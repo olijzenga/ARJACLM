@@ -26,7 +26,7 @@ import nl.oebelelijzenga.arjaclm.model.apr.genetic.GeneticConfig;
 import java.nio.file.Path;
 
 public record AprConfig(
-        PlmConfig plmConfig,
+        ClmConfig clmConfig,
         GeneticConfig geneticConfig,
         Path java8Home,
         Path java8ToolsDir,

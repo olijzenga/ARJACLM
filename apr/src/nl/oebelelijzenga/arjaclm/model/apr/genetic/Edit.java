@@ -57,7 +57,7 @@ public record Edit(
     @Override
     public String toString() {
         return String.format(
-                "Edit[e=%s, manip=\"%s\", modpoint=%s: \"%s\", plmIngr=%s, ingr=%s]",
+                "Edit[e=%s, manip=\"%s\", modpoint=%s: \"%s\", clmIngr=%s, ingr=%s]",
                 enabled ? "t" : "f",
                 manipulation,
                 modificationPoint.index(),
@@ -69,7 +69,7 @@ public record Edit(
 
     public String toFileString() {
         return String.format(
-                "Edit[\n\tenabled=%s,\n\tmanipulation=\"%s\",\n\tmodpoint=\"%s: %s\",\n\tplmIngr=%s,\n\tingredient=\n%s]",
+                "Edit[\n\tenabled=%s,\n\tmanipulation=\"%s\",\n\tmodpoint=\"%s: %s\",\n\tclmIngr=%s,\n\tingredient=\n%s]",
                 enabled ? "t" : "f",
                 manipulation,
                 modificationPoint.index(),

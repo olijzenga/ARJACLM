@@ -25,7 +25,7 @@ import picocli.CommandLine;
 
 @CommandLine.Command(name = "apr_cli", subcommands = {
         BugLocalizationCommand.class,
-        PlmApiClientCommand.class,
+        ClmApiClientCommand.class,
         ParseJavaCommand.class,
         SanityCheckCommand.class,
         RepairCommand.class,

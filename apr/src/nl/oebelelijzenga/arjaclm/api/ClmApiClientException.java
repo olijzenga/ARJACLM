@@ -19,16 +19,12 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package nl.oebelelijzenga.arjaclm.model.io;
+package nl.oebelelijzenga.arjaclm.api;
 
-public record PlmConfig(
-        boolean plmEnabled,
-        String modelName,
-        String modelVariant,
-        String apiHost,
-        int apiPort,
-        int nrPromptContextLines,
-        int nrInfills,
-        float mutationProbability
-) {
+import nl.oebelelijzenga.arjaclm.exception.AprException;
+
+public class ClmApiClientException extends AprException {
+    public ClmApiClientException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }
