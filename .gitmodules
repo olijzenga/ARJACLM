@@ -1,0 +1,9 @@
+[submodule "experiments/defects4j-apr/defects4j"]
+	path = experiments/defects4j-apr/defects4j
+	url = https://github.com/rjust/defects4j.git
+[submodule "experiments/defects4j-apr/fault-localization-data"]
+	path = experiments/defects4j-apr/fault-localization-data
+	url = https://bitbucket.org/rjust/fault-localization-data.git
+[submodule "experiments/defects4j-apr/gzoltar"]
+	path = experiments/defects4j-apr/gzoltar
+	url = https://github.com/GZoltar/gzoltar.git
