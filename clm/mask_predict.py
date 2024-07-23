@@ -250,6 +250,23 @@ def main(
     quantization_mode: str | None = None,
     seed: int = 0,
 ) -> None:
+    """
+    Perform a single mask predict task and print the result
+
+    Args:
+        model_name: Name of the CLM.
+        file_path: Path to the file containing the prompt.
+        raw_text: The prompt. Can optionally be used instead of file_path.
+        device: Device on which the CLM is loaded. Either 'cuda' for GPU or 'cpu' for CPU.
+        model_variant: Variant of the CLM (i.e. small, base, large).
+        nr_results: Number of infills to generate.
+        num_beams: Beam size for beam search.
+        top_p: Top p for nucleus sampling.
+        temperature: Temperature for nucleus sampling.
+        quantization_mode: Quantization mode, one of 4bit, 8bit, 16bit, 32bit. Leave empty to omit quantization.
+        seed: Seed used for sampling the CLM.
+    """
+
     setup_logging()
 
     torch.manual_seed(seed)

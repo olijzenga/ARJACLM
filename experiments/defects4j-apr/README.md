@@ -9,6 +9,8 @@ on how to run the benchmark.
 
 ## prepare_d4j_bugs.py
 
+Additionally requires `svn` and `sloccount` to be available on the PATH.
+
 Prepares one or more Defects4J bugs for benchmarking by performing fault localization, and adding the `bug.json` file used by ARJACLM.
 This script has grown quite complex over time due the problems I encountered with localization and APR for Defects4J bugs. For this reason
 the script is not guaranteed to work on your system. It might provide a reference for dealing with Defects4J nevertheless. The script
